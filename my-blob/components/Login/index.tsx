@@ -2,7 +2,10 @@ import type { NextPage } from "next"
 import styles from "./index.module.scss"
 import CountDown from "components/CountDown";
 import { ChangeEvent, useState } from "react"
+import request from 'service/fetch'
 import { GithubOutlined } from '@ant-design/icons';
+import { message } from 'antd'
+
 
 
 interface IProps {
@@ -12,6 +15,7 @@ interface IProps {
 
 const Login = (props: IProps) => {
     console.log('props---------', props);
+    const { isShow = false, onClose } = props
     const [isShowVerifyCode, setIsShowVerifyCode] = useState(false)
     const [form, setFrom] = useState({
         phone: '',
@@ -19,13 +23,40 @@ const Login = (props: IProps) => {
     })
     console.log(setFrom);
     const handleClose = () => {
-
+        onClose && onClose()
+        setIsShowVerifyCode(false)
     }
     const handleGetVerityCode = () => {
-        setIsShowVerifyCode(true)
+        if (!form?.phone) {
+            message.warning('请输入手机号')
+            return
+        }
+
+        request.post('./api/user/sendVerifuCode', {
+            to: form?.phone,
+            templateId: 1,
+        }).then((res: any) => {
+            if (res?.code === 0) {
+                setIsShowVerifyCode(true)
+            } else {
+                message.error(res?.msg || '未知错误')
+            }
+            console.log('res', res);
+        })
+
     }
     const handleLogin = () => {
-
+        request.post('/api/user/login', {
+            ...form,
+            identity_type: 'phone',
+        }).then((res: any) => {
+            if (res?.code === 0) {
+                //登录成功
+                onClose && onClose()
+            } else {
+                message.error(res?.msg || '未知错误')
+            }
+        })
     }
     const handleoAuthGithub = () => {
 
@@ -41,7 +72,7 @@ const Login = (props: IProps) => {
             [name]: value
         })
     }
-    const { isShow = false } = props
+
     return isShow ? (
         <div className={styles.loginArea}>
             <div className={styles.loginBox}>
