@@ -14,9 +14,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
     const db = await prepareConnection()
     //绑定数据库的UserAuth表
     const userAuthRepo = db.getRepository(UserAuth)
-    //绑定数据库的User表
-    const userRepo = db.getRepository(User)
-    const user = await userRepo.find()
+
     if (String(session.verifyCode) === String(verify)) {
         //验证码正确，在user_auths表中查找identity_type是否有记录
         const userAuth = await userAuthRepo.findOne({

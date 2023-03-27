@@ -3,6 +3,7 @@ import styles from "./index.module.scss"
 import CountDown from "components/CountDown";
 import { ChangeEvent, useState } from "react"
 import request from 'service/fetch'
+import { useStore } from 'store/index'
 import { GithubOutlined } from '@ant-design/icons';
 import { message } from 'antd'
 
@@ -14,7 +15,8 @@ interface IProps {
 }
 
 const Login = (props: IProps) => {
-    console.log('props---------', props);
+    const store = useStore()
+
     const { isShow = false, onClose } = props
     const [isShowVerifyCode, setIsShowVerifyCode] = useState(false)
     const [form, setFrom] = useState({
@@ -52,6 +54,9 @@ const Login = (props: IProps) => {
         }).then((res: any) => {
             if (res?.code === 0) {
                 //登录成功
+                store.user.setUserInfo(res?.data)
+                console.log('store---登陆成功', store);
+
                 onClose && onClose()
             } else {
                 message.error(res?.msg || '未知错误')
