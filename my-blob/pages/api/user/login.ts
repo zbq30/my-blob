@@ -4,12 +4,15 @@ import { ironOptions } from 'config/index'
 import { prepareConnection } from 'db/index'
 import { User, UserAuth } from 'db/entity/index'
 import { ISession } from "pages/api/index";
-
+import { Cookie } from "next-cookie";
+import { setCookie } from 'utils/index'
 
 export default withIronSessionApiRoute(login, ironOptions)
 
 async function login(req: NextApiRequest, res: NextApiResponse) {
     const session: ISession = req.session
+    const cookies = Cookie.fromApiRoute(req, res)
+
     const { phone = '', verify = '', identity_type = 'phone' } = req.body
     const db = await prepareConnection()
     //绑定数据库的UserAuth表
@@ -32,6 +35,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             session.nickname = nickname
             session.avatar = avatar
             await session.save()
+            setCookie(cookies, { id, nickname, avatar })
             res?.status(200).json({
                 code: 0, msg: '登录成功', data: {
                     userId: id,
@@ -69,6 +73,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             session.nickname = nickname
             session.avatar = avatar
             await session.save()
+            setCookie(cookies, { id, nickname, avatar })
             res?.status(200).json({
                 code: 0, msg: '登录成功', data: {
                     userId: id,

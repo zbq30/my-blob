@@ -4,14 +4,14 @@ export type IUserInfo = {
     //用户名
     nickName?: string
     //用户头像
-    avator?: string
+    avatar?: string
 }
 
 
 export interface IUserStore {
     userInfo: IUserInfo,
     // eslint-disable-next-line no-unused-vars
-    setUserInfo: ( value: IUserInfo ) => void
+    setUserInfo: (value: IUserInfo) => void
 }
 
 const userStore = (): IUserStore => {

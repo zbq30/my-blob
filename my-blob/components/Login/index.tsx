@@ -6,6 +6,7 @@ import request from 'service/fetch'
 import { useStore } from 'store/index'
 import { GithubOutlined } from '@ant-design/icons';
 import { message } from 'antd'
+import { observer } from "mobx-react-lite";
 
 
 
@@ -121,4 +122,4 @@ const Login = (props: IProps) => {
     ) : null
 }
 
-export default Login
+export default observer(Login)
