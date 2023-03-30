@@ -24,11 +24,14 @@ const Login = (props: IProps) => {
         phone: '',
         verify: '',
     })
+
     console.log(setFrom);
+
     const handleClose = () => {
         onClose && onClose()
         setIsShowVerifyCode(false)
     }
+
     const handleGetVerityCode = () => {
         if (!form?.phone) {
             message.warning('请输入手机号')
@@ -48,6 +51,7 @@ const Login = (props: IProps) => {
         })
 
     }
+
     const handleLogin = () => {
         request.post('/api/user/login', {
             ...form,
@@ -64,12 +68,22 @@ const Login = (props: IProps) => {
             }
         })
     }
-    const handleoAuthGithub = () => {
 
+    //client-id: ac986ef40a5cae478a29
+    //client-secret: 757e5e676ee3f3e31d992a6dbdb3d91a1abbbf9c
+    //点击登录框的github登录，通过window.open()方法跳转到一个github的链接，该url会接受两个参数，githubClientid是已经在github上创建好的应用id,redirectUri是在github点击授权后回跳的uri
+    const handleoAuthGithub = () => {
+        const githubClientid = 'ac986ef40a5cae478a29'
+        const redirectUri = 'http://localhost:3000/api/oauth/redirect'
+        window.open(
+            `https://github.com/login/oauth/authorize?client_id=${githubClientid}&redirect_uri=${redirectUri}`
+        );
     }
+
     const handleCountDownEnd = () => {
         setIsShowVerifyCode(false)
     }
+
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
         // eslint-disable-next-line no-unsafe-optional-chaining
         const { name, value } = e?.target
