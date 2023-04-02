@@ -4,7 +4,7 @@ import Link from "next/link"
 import { navs } from "./config"
 import { useRouter } from "next/router"
 import styles from './index.module.scss'
-import { Button, Avatar, Dropdown, Menu } from "antd"
+import { Button, Avatar, Dropdown, Menu, message } from "antd"
 import { LoginOutlined, HomeOutlined } from '@ant-design/icons'
 import { useStore } from 'store/index'
 import Login from "components/Login"
@@ -14,24 +14,34 @@ import { observer } from "mobx-react-lite";
 const Navbar: NextPage = () => {
   const store = useStore()
   const { userId, avatar } = store.user.userInfo
-  const { pathname } = useRouter()
+  const { pathname, push } = useRouter()
   const [isShowLogin, setIsShowLogin] = useState(false)
-  const handleGotoEditorPage = () => {
 
+  //文章新建页
+  const handleGotoEditorPage = () => {
+    if (userId) {
+      push('/editor/new')
+    } else {
+      message.warning('请先登录再发表文章哦~')
+    }
   }
 
+  //打开登录弹窗
   const handleLogin = () => {
     setIsShowLogin(true)
   }
 
+  //关闭登录弹窗
   const handleClose = () => {
     setIsShowLogin(false)
   }
 
+  //个人主页
   const handleGotoPersonalPage = () => {
-
+    push(`/user/${userId}`)
   }
 
+  //退出登录
   const handleLogout = () => {
     request.post('/api/user/logout').then((res: any) => {
       if (res?.code === 0) {

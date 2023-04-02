@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { Connection, getConnection, createConnection } from 'typeorm'
-import { User, UserAuth } from './entity/index'
+import { User, UserAuth, Article } from './entity/index'
 
 
 const host = process.env.DATABASE_HOST;
@@ -12,13 +12,13 @@ const database = process.env.DATABASE_NAME;
 let connectionReadyPromise: Promise<Connection> | null = null
 
 export const prepareConnection = () => {
-    if(!connectionReadyPromise) {
+    if (!connectionReadyPromise) {
         connectionReadyPromise = (async () => {
             try {
                 const staleConnection = getConnection()
                 await staleConnection.close()
             } catch (error) {
-                console.log(error);                
+                console.log(error);
             }
 
             const connection = await createConnection({
@@ -35,7 +35,7 @@ export const prepareConnection = () => {
                 //需要连接到的数据库
                 database,
                 //实体
-                entities: [User, UserAuth],
+                entities: [User, UserAuth, Article],
                 //
                 synchronize: false,
                 //日志
