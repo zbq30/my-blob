@@ -2,7 +2,7 @@ export type IUserInfo = {
     //用户id
     userId?: number | null
     //用户名
-    nickName?: string
+    nickname?: string
     //用户头像
     avatar?: string
 }

@@ -1,4 +1,3 @@
-import type { NextPage } from "next"
 import styles from "./index.module.scss"
 import CountDown from "components/CountDown";
 import { ChangeEvent, useState } from "react"

@@ -4,8 +4,6 @@ import { ironOptions } from 'config/index'
 import { prepareConnection } from 'db/index'
 import { User, Article } from 'db/entity/index'
 import { ISession } from "pages/api/index";
-import { Cookie } from "next-cookie";
-import { setCookie } from 'utils/index'
 import { EXCEPTION_ARTICLE } from 'pages/api/config/codes'
 
 export default withIronSessionApiRoute(publish, ironOptions)
