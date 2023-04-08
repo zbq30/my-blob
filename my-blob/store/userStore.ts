@@ -5,6 +5,8 @@ export type IUserInfo = {
     nickname?: string
     //用户头像
     avatar?: string
+    //文章绑定的id
+    id?: number
 }
 
 

@@ -4,6 +4,8 @@ import styles from './index.module.scss';
 import { EyeOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import { formatDistanceToNow } from 'date-fns';
+import { markdownToTxt } from 'markdown-to-txt';
+
 
 
 
@@ -28,7 +30,7 @@ const ListItem = (props: IProps) => {
                         </span>
                     </div>
                     <h4 className={styles.title}>{article?.title}</h4>
-                    <p className={styles.content}>{article?.content}</p>
+                    <p className={styles.content}>{markdownToTxt(article?.content)}</p>
                     <div className={styles.statistics}>
                         <EyeOutlined />
                         <span>{article?.views}</span>
