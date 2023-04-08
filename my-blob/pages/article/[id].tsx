@@ -46,6 +46,7 @@ const ArticleDetail = (props: IProps) => {
     const { article } = props;
     const store = useStore();
     const loginUserInfo = store?.user?.userInfo;
+
     const {
         user: { nickname, avatar, id },
     } = article;
@@ -70,9 +71,11 @@ const ArticleDetail = (props: IProps) => {
                             user: {
                                 avatar: loginUserInfo?.avatar,
                                 nickname: loginUserInfo?.nickname,
+                                id: loginUserInfo?.userId
                             },
                         },
                     ].concat([...(comments as any)]);
+
                     setComments(newComments);
                     setInputVal('');
                 } else {
@@ -131,7 +134,7 @@ const ArticleDetail = (props: IProps) => {
                                     <div className={styles.name}>
                                         <div>
                                             <span>{comment?.user?.nickname}</span>
-                                            {comment.user.id === id && <span className={styles.author}>作者</span>}
+                                            {Number(comment.user.id) === Number(id) && <span className={styles.author}>作者</span>}
                                         </div>
                                         <div className={styles.date}>
                                             {format(

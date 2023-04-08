@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { Connection, getConnection, createConnection } from 'typeorm'
-import { User, UserAuth, Article, Comment } from './entity/index'
+import { User, UserAuth, Article, Comment, Tag } from './entity/index'
 
 
 const host = process.env.DATABASE_HOST;
@@ -35,7 +35,7 @@ export const prepareConnection = () => {
                 //需要连接到的数据库
                 database,
                 //实体
-                entities: [User, UserAuth, Article, Comment],
+                entities: [User, UserAuth, Article, Comment, Tag],
                 //
                 synchronize: false,
                 //日志
