@@ -16,7 +16,6 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
     const followTags = await tagRepo.find({
         relations: ['users'],
         where: (qb: any) => {
-            //这里作用是查找user_id等于session里面userId的数据
             qb.where('user_id = :id', {
                 id: Number(userId),
             });

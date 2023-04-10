@@ -1,46 +1,91 @@
-import { prepareConnection } from 'db/index';
-import { Article } from 'db/entity';
-import ListItem from 'components/ListItem';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Divider } from 'antd';
+import classnames from 'classnames';
+import { prepareConnection } from 'db/index';
+import { Article, Tag } from 'db/entity';
+// import ListItem from 'components/ListItem';
 import { IArticle } from 'pages/api/index';
+import request from 'service/fetch';
+import styles from './index.module.scss';
+
+const DynamicComponent = dynamic(() => import('components/ListItem'));
+
+interface ITag {
+  id: number;
+  title: string;
+}
 
 interface IProps {
   articles: IArticle[];
+  tags: ITag[];
 }
 
 export async function getServerSideProps() {
   //建立数据库的连接
-  const db = await prepareConnection()
+  const db = await prepareConnection();
   const articles = await db.getRepository(Article).find({
-    //这里relations的作用是返回文章时同时也把文章关联的userid也跟着一起返回
-    relations: ['user'],
-  })
-
-
+    //这里relations的作用是返回文章时同时也把文章关联的user信息和标签也跟着一起返回
+    relations: ['user', 'tags'],
+  });
+  const tags = await db.getRepository(Tag).find({
+    relations: ['users'],
+  });
 
   return {
     props: {
       articles: JSON.parse(JSON.stringify(articles)) || [],
+      tags: JSON.parse(JSON.stringify(tags)) || [],
     },
-  }
+  };
 }
 
-
-
 const Home = (props: IProps) => {
-  const { articles } = props
+  const { articles, tags } = props;
+  const [selectTag, setSelectTag] = useState(0);
+  const [showAricles, setShowAricles] = useState([...articles]);
+
+  const handleSelectTag = (event: any) => {
+    const { tagid } = event?.target?.dataset || {};
+    setSelectTag(Number(tagid));
+  };
+
+  useEffect(() => {
+    selectTag &&
+      request.get(`/api/article/get?tag_id=${selectTag}`).then((res: any) => {
+        if (res?.code === 0) {
+          setShowAricles(res?.data);
+        }
+      });
+  }, [selectTag]);
+
   return (
     <div>
-      <div className='content-layout'>
-        {articles?.map((article) => (
+      <div className={styles.tags} onClick={handleSelectTag}>
+        {tags?.map((tag) => (
+          <div
+            key={tag?.id}
+            data-tagid={tag?.id}
+            className={classnames(
+              styles.tag,
+              selectTag === tag?.id ? styles['active'] : ''
+            )}
+          >
+            {tag?.title}
+          </div>
+        ))}
+      </div>
+      <div className="content-layout">
+        {showAricles?.map((article) => (
           <>
-            <ListItem article={article} />
-            <Divider></Divider>
+            {/* <ListItem article={article} /> */}
+            <DynamicComponent article={article} />
+            <Divider />
           </>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
